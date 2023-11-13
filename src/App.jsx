@@ -123,16 +123,16 @@ function Scene() {
 
 // Default click handler for our three.js objects
 function objectClickHandler() {
-  window.open('../prompt1.html', '_self');
+  window.open('prompt1.html', '_self');
 }
 function objectClickHandler2() {
-  window.open('../prompt1.html', '_self');
+  window.open('prompt1.html', '_self');
 }
 function objectClickHandler3() {
-  window.open('../prompt1.html', '_self');
+  window.open('prompt1.html', '_self');
 }
 function objectClickHandler4() {
-  window.open('../prompt1.html', '_self');
+  window.open('prompt1.html', '_self');
 }
 
 function onWindowResize() {
