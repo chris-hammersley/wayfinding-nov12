@@ -40,10 +40,10 @@ a {
   align-items: top!important;
 }
 
-.h2 {
+.h3 {
   font-family: "Lay Grotesk";
-  font-weight: 400;
-  font-size:.8em!important;
+  font-weight: 100;
+  font-size:10px!important;
 }
 
 // Modal Styling

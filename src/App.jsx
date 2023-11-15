@@ -45,6 +45,7 @@ function Scene() {
   const sheet = useCurrentSheet();
   const scroll = useScroll();
   const group = useRef();
+  const group2 = useRef();
   const texture = useLoader(THREE.TextureLoader, '/assets/sharon-prompt1-response.png');
   const videoTexture = useVideoTexture('/assets/prompt3.mp4');
   const vTexture2 = useVideoTexture('/assets/yanina-dancing.mp4');
@@ -75,23 +76,24 @@ function Scene() {
       <fog attach="fog" color={bgColor} near={-2} far={10} />
       <ambientLight intensity={0.5} />
       <directionalLight position={[-5, 5, -5]} intensity={1.5} />
-      /* 3D Background */
+      
+      /* 3D Background River */
       <Gltf src="/assets/better-river.glb" castShadow receiveShadow />
 
       // 3D Prompts
-      // First Image - Left
+      // Billboard Image - Left
       <e.mesh theatreKey="Prompt1" position={[-4.19, 1, 2.49]} rotation={[0, 1.09, 0]} onClick={secondToggle}>
       <boxGeometry args={[1, 2, .005]} />
       <meshBasicMaterial attach="material" map={texture} toneMapped={false} />
       </e.mesh>
 
-      // River Video Sideways - Right
+      // River Video Sideways - Back
       <e.mesh theatreKey="Prompt2" position={[3.19, 1, 0.4]} rotation={[0,1.95,0]} onClick={objectClickHandler2} scale={size}>
         <boxGeometry />
         <meshBasicMaterial attach="material" map={videoTexture} toneMapped={false} />
       </e.mesh>
 
-      // Second Image - Left
+      // 3D Cube Image - Left
       <e.mesh ref={box} theatreKey="Prompt3" position={[3.63, 1, -.5]} rotation={[0,1.24,0]} onClick={objectClickHandler3}>
         <boxGeometry args={[1, 2, .5]} />
         <meshBasicMaterial attach="material" map={vTexture2} toneMapped={false} />
@@ -102,7 +104,12 @@ function Scene() {
          <Gltf src="/assets/tea-cup.glb" castShadow receiveShadow onClick={objectClickHandler4} />
       </group>
 
-      // Second Modal
+      // 3D Tree with grass
+      <group ref={group2} dispose={null} position={[4,0,-2]} animation={false} >
+        <Gltf src="/assets/tree-with-grass.glb" castShadow receiveShadow />
+      </group>
+
+      // Second Modal test
       <Html>
         <div className="App">
           <Modal isShowing={isShowing} hide={secondToggle} />
