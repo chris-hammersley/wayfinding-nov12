@@ -81,7 +81,7 @@ function Scene() {
       <Gltf src="/assets/better-river.glb" castShadow receiveShadow />
 
       // 3D Prompts
-      // Billboard Image - Left
+      // Billboard Image - Right
       <e.mesh theatreKey="Prompt1" position={[-4.19, 1, 2.49]} rotation={[0, 1.09, 0]} onClick={secondToggle}>
       <boxGeometry args={[1, 2, .005]} />
       <meshBasicMaterial attach="material" map={texture} toneMapped={false} />
