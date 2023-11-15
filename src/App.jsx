@@ -1,4 +1,4 @@
-import { Canvas, useFrame, useLoader, extend } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader, useThree, extend } from "@react-three/fiber";
 import { Gltf, ScrollControls, useScroll, useAspect, useVideoTexture, useTexture, useGLTF, useAnimations, Billboard, Text, Html } from "@react-three/drei";
 import { getProject, val } from "@theatre/core";
 import flyThroughState from "./flyThruState.json"; // import this after creating the animation for production
@@ -8,39 +8,34 @@ import * as THREE from 'three';
 import { SheetProvider, PerspectiveCamera, useCurrentSheet } from "@theatre/r3f";
 import { Model } from './Model';
 import { Model_Girl } from './Model_Girl';
-//import Portal from './Portal';
+import './main.css';
+import Portal from './Portal';
 import { ReactDOM, createPortal } from 'react-dom';
-import ModalContent from './ModalContent';
-import { Modal, ReactModal } from 'react-modal';
+import Modal from './ModalContent';
+import useModal from './useModal';
+//import { Modal, ReactModal } from 'react-modal';
 
 export default function App() {
 //  const sheet = getProject("Fly Through").sheet("Scene"); // used when creating keyframes/json file
   const sheet = getProject("Fly Through", {state: flyThroughState}).sheet("Scene"); // used after creating json keyframe file - needs to match the import at top of file
 
-  function Portal() {
-    const [showModal, setShowModal] = useState(false);
-  
-    return (
-      <>
-      <Html>
-      {showModal && createPortal(
-          <ModalContent onClose={() => setShowModal(false)} />,
-          document.getElementById('portal')
-        )}
-      </Html>
-      </>
-    );
-  }
+  const {isShowing, toggle} = useModal(); // connects to modalcontent.jsx
+  //const {width, height } = useThree(state => state.viewport) // for the static menu
 
   return (
     <Canvas gl={{ preserveDrawingBuffer: true }}>
       <ScrollControls pages={6}>
         <SheetProvider sheet={sheet}>
           <Scene />
-          <Model position={[-3.4, 0.21, -4]} onClick={objectClickHandler} />
-          <Model_Girl position={[-3.63, 1.47, .15]} rotation={[ 0, .5, 0]} scale={.75} onClick={objectClickHandler} />
+          <Model position={[-3.4, 0.21, -4]} onClick={toggle} />
+          <Model_Girl position={[-3.63, 1.47, .15]} rotation={[ 0, .5, 0]} scale={.75} onClick={toggle} />
         </SheetProvider>
       </ScrollControls>
+      <Html>
+        <div className="App">
+          <Modal isShowing={isShowing} hide={toggle} />
+        </div>
+      </Html>
     </Canvas>
   );
 }
@@ -55,8 +50,6 @@ function Scene() {
   const vTexture2 = useVideoTexture('/assets/yanina-dancing.mp4');
   const size = useAspect(16, 9);
   const box = useRef();
-  const [open, setModalOpen] = useState(false);
-  //const billboardTexture = useTexture('https://merylmurman.me');
 
   // our callback will run on every animation frame
   useFrame(() => {
@@ -73,6 +66,7 @@ function Scene() {
     });
 
   const bgColor = "#84a4f4";
+  const {isShowing, secondToggle} = useModal();
 
   return (
     <>
@@ -86,7 +80,7 @@ function Scene() {
 
       // 3D Prompts
       // First Image - Left
-      <e.mesh theatreKey="Prompt1" position={[-4.19, 1, 2.49]} rotation={[0, 1.09, 0]} onClick={objectClickHandler}>
+      <e.mesh theatreKey="Prompt1" position={[-4.19, 1, 2.49]} rotation={[0, 1.09, 0]} onClick={secondToggle}>
       <boxGeometry args={[1, 2, .005]} />
       <meshBasicMaterial attach="material" map={texture} toneMapped={false} />
       </e.mesh>
@@ -107,6 +101,13 @@ function Scene() {
       <group ref={group} dispose={null} position={[3.2, 0.83, -8.5]} height={20}>
          <Gltf src="/assets/tea-cup.glb" castShadow receiveShadow onClick={objectClickHandler4} />
       </group>
+
+      // Second Modal
+      <Html>
+        <div className="App">
+          <Modal isShowing={isShowing} hide={secondToggle} />
+        </div>
+      </Html>
 
       // 3D camera
       <PerspectiveCamera
@@ -142,6 +143,14 @@ function onWindowResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-window.onload = function() {
+const modal = document.querySelector('.modal')
+
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape') {
+    modal.style.display = 'none';
+  }
+})
+
+/*window.onload = function() {
   App();
-}
+}*/
