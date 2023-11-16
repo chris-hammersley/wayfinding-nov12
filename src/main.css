@@ -124,7 +124,8 @@ button {
   border: none;
   border-radius: 3px;
   padding: .3rem .8rem;
-  margin-left: .2rem;
+  margin-left: 96vw;
+  margin-top:4px;
 }
 
 .button-default {

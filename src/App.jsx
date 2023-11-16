@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useLoader, useThree, extend } from "@react-three/fiber";
-import { Gltf, ScrollControls, useScroll, useAspect, useVideoTexture, useTexture, useGLTF, useAnimations, Billboard, Text, Html } from "@react-three/drei";
+import { Gltf, ScrollControls, useScroll, useAspect, useVideoTexture, PositionalAudio, useTexture, useGLTF, useAnimations, Billboard, Text, Html } from "@react-three/drei";
 import { getProject, val } from "@theatre/core";
 import flyThroughState from "./flyThruState.json"; // import this after creating the animation for production
 import { editable as e } from "@theatre/r3f"; // remove this before deploying to production
@@ -9,11 +9,8 @@ import { SheetProvider, PerspectiveCamera, useCurrentSheet } from "@theatre/r3f"
 import { Model } from './Model';
 import { Model_Girl } from './Model_Girl';
 import './main.css';
-import Portal from './Portal';
-import { ReactDOM, createPortal } from 'react-dom';
 import Modal from './ModalContent';
 import useModal from './useModal';
-//import { Modal, ReactModal } from 'react-modal';
 
 export default function App() {
 //  const sheet = getProject("Fly Through").sheet("Scene"); // used when creating keyframes/json file
@@ -29,6 +26,7 @@ export default function App() {
           <Scene />
           <Model position={[-3.4, 0.21, -4]} onClick={toggle} />
           <Model_Girl position={[-3.63, 1.47, .15]} rotation={[ 0, .5, 0]} scale={.75} onClick={toggle} />
+          <PlaySound url="/assets/watersongs.thespacebetween.m4a" />
         </SheetProvider>
       </ScrollControls>
       <Html>
@@ -67,7 +65,7 @@ function Scene() {
     });
 
   const bgColor = "#84a4f4";
-  const {isShowing, secondToggle} = useModal();
+  const {isShowing, toggle} = useModal();
 
   return (
     <>
@@ -82,37 +80,37 @@ function Scene() {
 
       // 3D Prompts
       // Billboard Image - Right
-      <e.mesh theatreKey="Prompt1" position={[-4.19, 1, 2.49]} rotation={[0, 1.09, 0]} onClick={secondToggle}>
+      <e.mesh theatreKey="Prompt1" position={[-4.19, 1, 2.49]} rotation={[0, 1.09, 0]} onClick={toggle} >
       <boxGeometry args={[1, 2, .005]} />
       <meshBasicMaterial attach="material" map={texture} toneMapped={false} />
       </e.mesh>
 
       // River Video Sideways - Back
-      <e.mesh theatreKey="Prompt2" position={[3.19, 1, 0.4]} rotation={[0,1.95,0]} onClick={objectClickHandler2} scale={size}>
+      <e.mesh theatreKey="Prompt2" position={[3.19, 1, 0.4]} rotation={[0,1.95,0]} scale={size}>
         <boxGeometry />
         <meshBasicMaterial attach="material" map={videoTexture} toneMapped={false} />
       </e.mesh>
 
-      // 3D Cube Image - Left
-      <e.mesh ref={box} theatreKey="Prompt3" position={[3.63, 1, -.5]} rotation={[0,1.24,0]} onClick={objectClickHandler3}>
+      // 3D Cube Video - Left
+      <e.mesh ref={box} theatreKey="Prompt3" position={[3.63, 1, -.5]} rotation={[0,1.24,0]} onClick={toggle} >
         <boxGeometry args={[1, 2, .5]} />
         <meshBasicMaterial attach="material" map={vTexture2} toneMapped={false} />
       </e.mesh>
 
-      // 3D Spinning Object - Right
+      // 3D Spinning Cup - Right
       <group ref={group} dispose={null} position={[3.2, 0.83, -8.5]} height={20}>
-         <Gltf src="/assets/tea-cup.glb" castShadow receiveShadow onClick={objectClickHandler4} />
+         <Gltf src="/assets/tea-cup.glb" castShadow receiveShadow onClick={toggle} />
       </group>
 
       // 3D Tree with grass
-      <group ref={group2} dispose={null} position={[4,0,-2]} animation={false} >
+      <group ref={group2} dispose={null} position={[4,0,-2]} >
         <Gltf src="/assets/tree-with-grass.glb" castShadow receiveShadow />
       </group>
 
       // Second Modal test
       <Html>
         <div className="App">
-          <Modal isShowing={isShowing} hide={secondToggle} />
+          <Modal isShowing={isShowing} hide={toggle} />
         </div>
       </Html>
 
@@ -126,6 +124,17 @@ function Scene() {
         far={70}
       />
     </>
+  );
+}
+
+function PlaySound({ url }) {
+  // This component creates a suspense block, blocking execution until
+  // all async tasks (in this case PositionAudio) have been resolved.
+  const sound = useRef();
+  return (
+    <Suspense fallback={null}>
+      <PositionalAudio autoplay url={url} ref={sound} />
+    </Suspense>
   );
 }
 
