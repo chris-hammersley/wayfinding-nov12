@@ -107,6 +107,11 @@ function Scene() {
         <Gltf src="/assets/tree-with-grass.glb" castShadow receiveShadow />
       </group>
 
+      // 3D fountain
+      <group ref={group2} dispose={null} position={[-1,0.62,3]} scale={1}>
+        <Gltf src="/assets/fountain.glb" castShadow receiveShadow onClick={toggle} />
+      </group>
+
       // Second Modal test
       <Html>
         <div className="App">
